@@ -1,5 +1,17 @@
+# Default 
+gradle
 .gradle
 build/
 
+# Idea, User Specific
+.idea
+
+# Idea, File-based project format
+*.ipr
+*.iml
+*.iws
+
 # Ignore Gradle GUI config
 gradle-app.setting
+
+.DS_Store
