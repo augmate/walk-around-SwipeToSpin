@@ -1,0 +1,1 @@
+Images for the interior view of a vehicle viewer go here.

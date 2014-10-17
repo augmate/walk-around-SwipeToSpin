@@ -1,0 +1,1 @@
+Images for the exterior/closed view of a vehicle viewer go here.
