@@ -1,19 +1,11 @@
 package com.augmate.swipetospin;
 
-import com.augmate.swipetospin.ImageUtils;
-import com.sun.imageio.plugins.common.ImageUtil;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfByte;
-import org.opencv.core.Size;
+import org.opencv.core.*;
+import org.opencv.features2d.FeatureDetector;
+import org.opencv.features2d.Features2d;
 import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 import org.opencv.imgproc.Imgproc;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 
 public class HelloWorld {
 
@@ -22,10 +14,22 @@ public class HelloWorld {
 
         nu.pattern.OpenCV.loadShared();
         System.loadLibrary("opencv_java249");
-        VideoCapture cap = new VideoCapture(0);
+        //VideoCapture cap = new VideoCapture(0);
 
-        Mat frame = Highgui.imread("Phase1/HarpSeal.jpg");
-        ImageUtils.showResult(frame);
+        Mat sealColor = Highgui.imread("Phase1/HarpSeal.jpg");
+        Mat sealGray = Highgui.imread("Phase1/HarpSeal.jpg",Highgui.CV_LOAD_IMAGE_GRAYSCALE);
+
+        //get Fast points
+        FeatureDetector fast = FeatureDetector.create(FeatureDetector.PYRAMID_ORB);
+        MatOfKeyPoint points = new MatOfKeyPoint();
+        fast.detect(sealGray, points);
+
+        //Mark Fast points`
+        Scalar redcolor = new Scalar(0,255,0);
+        Features2d.drawKeypoints(sealColor, points, sealColor, redcolor, 3);
+
+        //show marked Fast points
+        ImageUtils.showResult(sealColor);
 
     }
 
