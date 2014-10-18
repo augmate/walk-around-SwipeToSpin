@@ -12,6 +12,7 @@ project(':Common') {
     }
     dependencies {
         compile 'nu.pattern:opencv:2.4.9-7'
+        compile 'com.n3twork.druid:alphanum:1.0.3'
     }
 }
 

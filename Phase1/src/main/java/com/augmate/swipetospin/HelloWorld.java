@@ -1,11 +1,11 @@
 package com.augmate.swipetospin;
 
-import org.opencv.core.*;
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfKeyPoint;
+import org.opencv.core.Scalar;
 import org.opencv.features2d.FeatureDetector;
 import org.opencv.features2d.Features2d;
 import org.opencv.highgui.Highgui;
-import org.opencv.highgui.VideoCapture;
-import org.opencv.imgproc.Imgproc;
 
 public class HelloWorld {
 
@@ -30,6 +30,12 @@ public class HelloWorld {
 
         //show marked Fast points
         ImageUtils.showResult(sealColor);
+
+        CarSet joe = new CarSet();
+        joe.loadFromDir("training_subset/bmwbayside/4jgda7db8da163624/img/ec");
+
+        for (final Mat img : joe.exterior)
+            ImageUtils.showResult(img);
 
     }
 
