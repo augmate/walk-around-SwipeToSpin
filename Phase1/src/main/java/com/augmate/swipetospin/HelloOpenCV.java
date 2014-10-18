@@ -7,7 +7,12 @@ import org.opencv.features2d.FeatureDetector;
 import org.opencv.features2d.Features2d;
 import org.opencv.highgui.Highgui;
 
-public class HelloWorld {
+import java.io.File;
+
+/**
+ * Created by frank on 10/18/14.
+ */
+public class HelloOpenCV {
 
     public static void main(String[] args){
         System.out.println("Hello,OpenCV");
@@ -29,15 +34,13 @@ public class HelloWorld {
         Features2d.drawKeypoints(sealColor, points, sealColor, redcolor, 3);
 
         //show marked Fast points
-        ImageUtils.showResult(sealColor);
+        //ImageUtils.showResult(sealColor);
 
-        CarSet joe = new CarSet();
-        joe.loadFromDir("training_subset/bmwbayside/4jgda7db8da163624/img/ec");
+        File joeFolder = new File("training_subset/bmwbayside/4jgda7db8da163624/img");
+        CarSet joe = new CarSet("bmwbayside", "4jgda7db8da163624", joeFolder);
 
         for (final Mat img : joe.exterior)
             ImageUtils.showResult(img);
 
     }
-
 }
-

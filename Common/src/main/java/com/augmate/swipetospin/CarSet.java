@@ -12,23 +12,44 @@ import java.util.Comparator;
 /**
  * Created by frank0631 on 10/17/14.
  */
-public class CarSet {
+
+public class CarSet{
 
     public ArrayList<Mat> exterior;
+    public ArrayList<Mat> interior;
+    public ArrayList<Mat> closeup;
     public int exteriorNum;
+    public int interiorNum;
+    public int closeupNum;
+    public String username;
+    public String vin;
 
     public CarSet(){
         exterior = new ArrayList<Mat>();
+        interior = new ArrayList<Mat>();
+        closeup = new ArrayList<Mat>();
     }
 
-    public void loadFromDir(String dir) {
+    public CarSet(String username, String vin, File imgFolder){
+        this.username=username;
+        this.vin=vin;
+
+        File ecFolder = new File(imgFolder,"ec");
+        File iFolder = new File(imgFolder,"i");
+        File closeupFolder = new File(imgFolder,"closeups");
+
+        this.exterior = loadFromDir(ecFolder);
+    }
+
+    public ArrayList<Mat> loadFromDir(String dir) {
         File folder = new File(dir);
-        loadFromDir(folder);
+        return loadFromDir(folder);
     }
 
-    public void loadFromDir(File folder){
+    public ArrayList<Mat> loadFromDir(File folder){
 
-        if (folder.isFile())return;
+        ArrayList<Mat> imageList = new ArrayList<Mat>();
+        if (folder.isFile())return null;
 
         File[] listedFiles = folder.listFiles();
         String[] listedFileNames = new String[listedFiles.length];
@@ -38,8 +59,8 @@ public class CarSet {
         Comparator<String> comp = new AlphanumComparator();
         Arrays.sort(listedFileNames, comp);
 
-        for (final String filename : listedFileNames)
-            System.out.println(filename);
+        //for (final String filename : listedFileNames)
+        //System.out.println(filename);
 
         for (final String filename : listedFileNames) {
             File fileEntry = new File(filename);
@@ -48,18 +69,53 @@ public class CarSet {
             } else if (fileEntry.isFile()){
                 //fileEntry.getAbsoluteFile()
                 try {
-                    System.out.println(filename);
+                    //System.out.println(filename);
                     Mat img = Highgui.imread(filename);
                     if (img!=null)
-                        exterior.add(img);
+                        imageList.add(img);
                 }
                 catch (Exception ex) {
                     //ex.printStackTrace();
                 }
             }
         }
-        exteriorNum = exterior.size();
-
+        return imageList;
     }
 
+    /*  training set folder structure
+        training subset
+            -username
+                -hash
+                    -img`
+                        -closeup
+                        -ec (exterior)
+                        -i (interior)*/
+    public static ArrayList<CarSet> traverseTrainingDir(String dir){
+        File folder = new File(dir);
+        return  traverseTrainingDir(folder);
+    }
+
+    public static ArrayList<CarSet> traverseTrainingDir(File trainingFolder){
+        ArrayList<CarSet> carSetArrayList= new ArrayList<CarSet>();
+
+        File[] listedUsernameFolders = trainingFolder.listFiles();
+
+        for (final File userFolderName : listedUsernameFolders) {
+
+            if(!userFolderName.isDirectory()) continue;
+            System.out.println("User: " + userFolderName.getName());
+            File[] listedVINFolders = userFolderName.listFiles();
+
+            for (final File vinFolderName : listedVINFolders) {
+                System.out.println("VIN: " + vinFolderName.getName());
+
+                File imgFolder = new File(vinFolderName,"img");
+                if(!imgFolder.isDirectory()) continue;
+
+                CarSet tmpCarSet = new CarSet(userFolderName.getName(), vinFolderName.getName(), imgFolder);
+                carSetArrayList.add(tmpCarSet);
+            }
+        }
+        return  carSetArrayList;
+    }
 }
