@@ -17,7 +17,7 @@ public class Train {
         trainingSet = CarSet.traverseTrainingDir("training_subset");
 
         for (final Mat img : trainingSet.get(9).exterior)
-            ImageUtils.showResult(img);
+            ImageUtils.showResult(img,"exterior");
 
     }
 

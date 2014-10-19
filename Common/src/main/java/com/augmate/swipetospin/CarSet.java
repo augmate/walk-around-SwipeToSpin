@@ -39,6 +39,7 @@ public class CarSet{
         File closeupFolder = new File(imgFolder,"closeups");
 
         this.exterior = loadFromDir(ecFolder);
+        this.exteriorNum = this.exterior.size();
     }
 
     public ArrayList<Mat> loadFromDir(String dir) {
