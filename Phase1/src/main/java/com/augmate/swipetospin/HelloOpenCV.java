@@ -43,12 +43,20 @@ public class HelloOpenCV {
         //Quick 3D Image Pair processing for joe the bmw
         File joeFolder = new File("training_subset/bmwbayside/4jgda7db8da163624/img");
         CarSet joe = new CarSet("bmwbayside", "4jgda7db8da163624", joeFolder);
-        for(int i=1;i<joe.exteriorNum;i++)
-            Quick3DPairProcess(joe.exterior.get(i), joe.exterior.get(i-1), true, false, false);
+        for(int i=1;i<joe.exteriorNum;i++) {
+            String pairNames = new String(""+i+" vs "+(i-1));
+            FundHomoMat fundHomoMat = new FundHomoMat();
+            fundHomoMat  = Quick3DPairProcess(
+                    joe.exterior.get(i),
+                    joe.exterior.get(i - 1),
+                    true, false, false,pairNames);
+            System.out.println("fundamenta "+pairNames+"\n"+fundHomoMat.fundamentaAB.dump());
+            System.out.println();
+        }
 
     }
 
-    private static void Quick3DPairProcess(Mat imgA, Mat imgB, boolean showEpipole, boolean showMatch, boolean showStitch) {
+    private static FundHomoMat Quick3DPairProcess(Mat imgA, Mat imgB, boolean showEpipole, boolean showMatch, boolean showStitch, String pairNames) {
 
         Mat grayImgA=new Mat();
         Mat grayImgB=new Mat();
@@ -60,13 +68,18 @@ public class HelloOpenCV {
         Mat epipoleAB = imagePair3DProcess.getEpipoleAB();
         Mat stitchedAB = imagePair3DProcess.getStitchedAB();
         Mat matchedImage = imagePair3DProcess.getMatchedImage();
+        FundHomoMat fhMat = new FundHomoMat();
+        fhMat.fundamentaAB = imagePair3DProcess.getFundamentaAB();
+        fhMat.homographyAB = imagePair3DProcess.getHomographyAB();
 
         if(showEpipole)
-            ImageUtils.showResult(epipoleAB,"epipoleAB");
+            ImageUtils.showResult(epipoleAB,"epipoleAB "+pairNames);
         if(showStitch)
-            ImageUtils.showResult(stitchedAB,"stitchedAB");
+            ImageUtils.showResult(stitchedAB,"stitchedAB "+pairNames);
         if(showMatch)
-            ImageUtils.showResult(matchedImage,"matchedImage");
+            ImageUtils.showResult(matchedImage,"matchedImage "+pairNames);
+
+        return fhMat;
     }
 
 }

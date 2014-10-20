@@ -116,9 +116,9 @@ public class ImagePair3DProcess {
         }
 
         //System.out.println(linesAB.get(0,0)[0]+","+linesAB.get(0,0)[1]+","+linesAB.get(0,0)[2]);
-        System.out.println("linesA: "+epilinesA.toString());
-        System.out.println("linesB: "+epilinesB.toString());
-        System.out.println("fundamentaAB: " + getFundamentaAB().toString());
+        //System.out.println("linesA: "+epilinesA.toString());
+        //System.out.println("linesB: "+epilinesB.toString());
+        //System.out.println("fundamentaAB: " + getFundamentaAB().toString());
 
         int biggestHeight = Math.max(grayImgA.height(), grayImgB.height());
         int concatWidth = grayImgA.width() + grayImgB.width();
@@ -145,91 +145,3 @@ public class ImagePair3DProcess {
     }
 
 }
-
-
-//
-//public static class ImagePair3DProcess {
-//
-//    public ImagePair3DProcess invoke() {
-//        FeatureDetector detector = FeatureDetector.create(FeatureDetector.PYRAMID_FAST);
-//        DescriptorExtractor extractor = DescriptorExtractor.create(DescriptorExtractor.BRISK);
-//        MatOfKeyPoint keypointsA = new MatOfKeyPoint();
-//        MatOfKeyPoint keypointsB = new MatOfKeyPoint();
-//        detector.detect(grayImgA, keypointsA );
-//        detector.detect(grayImgB, keypointsB );
-//        Mat descriptersA = new Mat(grayImgA.rows(), grayImgA.cols(), grayImgA.type());
-//        Mat descriptersB = new Mat(grayImgB.rows(), grayImgB.cols(), grayImgB.type());
-//        extractor.compute(grayImgA,keypointsA,descriptersA);
-//        extractor.compute(grayImgB,keypointsB,descriptersB);
-//
-//        MatOfDMatch matchs = new MatOfDMatch();
-//        DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_HAMMING);
-//        matcher.match(descriptersA, descriptersB, matchs);
-//        List<DMatch> matchesList = matchs.toList();
-//
-//        Collections.sort(matchesList, new MatchDistanceComparator());
-//
-//        //matchesList = matchesList.subList(0,100);
-//        MatOfDMatch matchsSorted = new MatOfDMatch();
-//        matchsSorted.fromList(matchesList);
-//
-//        ArrayList<Point> AimgPoints = new ArrayList<Point>();
-//        ArrayList<Point> BimgPoints = new ArrayList<Point>();
-//        for (final DMatch matchpoint : matchesList) {
-//            AimgPoints.add(keypointsA.toList().get(matchpoint.queryIdx).pt);
-//            BimgPoints.add(keypointsB.toList().get(matchpoint.trainIdx).pt);
-//        }
-//        MatOfPoint2f AmatofPoints = new MatOfPoint2f();
-//        MatOfPoint2f BmatofPoints = new MatOfPoint2f();
-//        AmatofPoints.fromList(AimgPoints);
-//        BmatofPoints.fromList(BimgPoints);
-//
-//        Mat fundamentaAB = Calib3d.findFundamentalMat(BmatofPoints, AmatofPoints, Calib3d.RANSAC, 3, 0.99);
-//        Mat homographyAB = Calib3d.findHomography(BmatofPoints, AmatofPoints, Calib3d.RANSAC, 3);
-//
-//        Mat linesAB = new Mat();
-//        Calib3d.computeCorrespondEpilines(AmatofPoints,1,fundamentaAB,linesAB);
-//        for(int r=0; r< linesAB.rows();r++) {
-//            double ax = linesAB.get(r,0)[0];
-//            double by = linesAB.get(r,0)[1];
-//            double c = linesAB.get(r,0)[2];
-//            //System.out.println("ax: "+ax+" by: "+by+" c: "+c);
-//            ImageUtils.vector(imgA, ax, by, c, new Scalar(255, 100, 100));
-//        }
-//        Calib3d.computeCorrespondEpilines(AmatofPoints,2,fundamentaAB,linesAB);
-//        for(int r=0; r< linesAB.rows();r++) {
-//            double ax = linesAB.get(r,0)[0];
-//            double by = linesAB.get(r,0)[1];
-//            double c = linesAB.get(r,0)[2];
-//            //System.out.println("ax: "+ax+" by: "+by+" c: "+c);
-//            ImageUtils.vector(imgB, ax, by, c, new Scalar(255, 100, 100));
-//        }
-//
-//        //System.out.println(linesAB.get(0,0)[0]+","+linesAB.get(0,0)[1]+","+linesAB.get(0,0)[2]);
-//        System.out.println("linesAB: "+linesAB.toString());
-//        System.out.println("fundamentaAB: "+fundamentaAB.toString());
-//
-//        int biggestHeight = Math.max(grayImgA.height(), grayImgB.height());
-//        int concatWidth = grayImgA.width() + grayImgB.width();
-//        Size warpedSize = new Size(concatWidth,biggestHeight);
-//
-//        epipoleAB = new Mat(warpedSize, imgA.type());
-//        Mat epipoleHalfA = new Mat(epipoleAB, new Rect(0,0, imgA.width(), imgA.height()));
-//        Mat epipoleHalfB = new Mat(epipoleAB, new Rect(imgA.width(),0, imgB.width(), imgB.height()));
-//        imgA.copyTo(epipoleHalfA);
-//        imgB.copyTo(epipoleHalfB);
-//
-//        Mat warpedB = new Mat();
-//        Imgproc.warpPerspective(imgB, warpedB, homographyAB, warpedSize);
-//
-//        stitchedAB = new Mat(warpedSize, imgA.type());
-//        Mat stitchedHalfA = new Mat(stitchedAB, new Rect(0,0, imgA.width(), imgA.height()));
-//        Mat stitchedHalfB = new Mat(stitchedAB, new Rect(0,0, warpedB.width(), warpedB.height()));
-//        warpedB.copyTo(stitchedHalfB);
-//        imgA.copyTo(stitchedHalfA);
-//
-//        matchedImage = new Mat(concatWidth, biggestHeight, imgA.type());
-//        Features2d.drawMatches(imgA, keypointsA, imgB, keypointsB, matchsSorted, matchedImage);
-//        return this;
-//    }
-//}

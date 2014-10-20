@@ -43,5 +43,14 @@ public class ImageUtils {
         return;
     }
 
+    public static Mat unitCamMatrix(){
+        double[][] camDouble = {{1, 0, 1}, {0, 1, 1}, {0, 0, 1}};
+        Mat camMat = Mat.zeros(3,3, CvType.CV_64F);
+        for(int i=0;i<3;i++)
+            for(int j=0;j<3;j++)
+                camMat.put(i,j,camDouble[i][j]);
+        return camMat;
+    }
+
 
 }
