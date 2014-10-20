@@ -1,5 +1,4 @@
 rootProject.name = 'walk-around-SwipeToSpin'
 
-include 'Common'
-include 'Phase1'
+include ':app'
 

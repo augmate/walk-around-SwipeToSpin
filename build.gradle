@@ -4,8 +4,11 @@ allprojects {
     apply plugin: 'idea'
 }
 
-project(':Common') {
+project(':app'){
     apply plugin: 'java'
+    apply plugin: 'application'
+
+    mainClassName = 'com.augmate.swipetospin.SwipeToSpinApp'
 
     repositories {
         mavenCentral()
@@ -13,21 +16,6 @@ project(':Common') {
     dependencies {
         compile 'nu.pattern:opencv:2.4.9-7'
         compile 'com.n3twork.druid:alphanum:1.0.3'
-    }
-}
-
-project(':Phase1') {
-    apply plugin: 'java'
-    apply plugin: 'application'
-
-    mainClassName = 'com.augmate.swipetospin.Phase1'
-
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        compile project(':Common')
-        compile 'nu.pattern:opencv:2.4.9-7'
         testCompile group: 'junit', name: 'junit', version: '4.11'
     }
 }

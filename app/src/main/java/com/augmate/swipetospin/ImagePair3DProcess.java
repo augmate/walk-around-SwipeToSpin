@@ -58,12 +58,12 @@ public class ImagePair3DProcess {
         DescriptorExtractor extractor = DescriptorExtractor.create(DescriptorExtractor.ORB);
         MatOfKeyPoint keypointsA = new MatOfKeyPoint();
         MatOfKeyPoint keypointsB = new MatOfKeyPoint();
-        detector.detect(grayImgA, keypointsA );
-        detector.detect(grayImgB, keypointsB );
+        detector.detect(grayImgA, keypointsA);
+        detector.detect(grayImgB, keypointsB);
         Mat descriptersA = new Mat(grayImgA.rows(), grayImgA.cols(), grayImgA.type());
         Mat descriptersB = new Mat(grayImgB.rows(), grayImgB.cols(), grayImgB.type());
-        extractor.compute(grayImgA,keypointsA,descriptersA);
-        extractor.compute(grayImgB,keypointsB,descriptersB);
+        extractor.compute(grayImgA, keypointsA, descriptersA);
+        extractor.compute(grayImgB, keypointsB, descriptersB);
 
         MatOfDMatch matchs = new MatOfDMatch();
         DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_HAMMING);
@@ -72,8 +72,8 @@ public class ImagePair3DProcess {
 
         Collections.sort(matchesList, new MatchDistanceComparator());
 
-        if(matchLimit>0)
-            matchesList = matchesList.subList(0,Math.min(matchLimit,matchesList.size()));
+        if (matchLimit > 0)
+            matchesList = matchesList.subList(0, Math.min(matchLimit, matchesList.size()));
 
         MatOfDMatch matchsSorted = new MatOfDMatch();
         matchsSorted.fromList(matchesList);
@@ -97,20 +97,20 @@ public class ImagePair3DProcess {
         Mat linesImgA = imgA.clone();
         Mat linesImgB = imgB.clone();
 
-        Calib3d.computeCorrespondEpilines(BmatofPoints,2, getFundamentaAB(),epilinesA);
-        Calib3d.computeCorrespondEpilines(AmatofPoints,1, getFundamentaAB(),epilinesB);
+        Calib3d.computeCorrespondEpilines(BmatofPoints, 2, getFundamentaAB(), epilinesA);
+        Calib3d.computeCorrespondEpilines(AmatofPoints, 1, getFundamentaAB(), epilinesB);
 
-        for(int r=0; r< epilinesA.rows();r++) {
-            double ax = epilinesA.get(r,0)[0];
-            double by = epilinesA.get(r,0)[1];
-            double c = epilinesA.get(r,0)[2];
+        for (int r = 0; r < epilinesA.rows(); r++) {
+            double ax = epilinesA.get(r, 0)[0];
+            double by = epilinesA.get(r, 0)[1];
+            double c = epilinesA.get(r, 0)[2];
             //System.out.println("ax: "+ax+" by: "+by+" c: "+c);
             ImageUtils.vector(linesImgA, ax, by, c, new Scalar(255, 100, 100));
         }
-        for(int r=0; r< epilinesB.rows();r++) {
-            double ax = -epilinesB.get(r,0)[0];
-            double by = -epilinesB.get(r,0)[1];
-            double c = -epilinesB.get(r,0)[2];
+        for (int r = 0; r < epilinesB.rows(); r++) {
+            double ax = -epilinesB.get(r, 0)[0];
+            double by = -epilinesB.get(r, 0)[1];
+            double c = -epilinesB.get(r, 0)[2];
             //System.out.println("ax: "+ax+" by: "+by+" c: "+c);
             ImageUtils.vector(linesImgB, ax, by, c, new Scalar(100, 255, 100));
         }
@@ -122,11 +122,11 @@ public class ImagePair3DProcess {
 
         int biggestHeight = Math.max(grayImgA.height(), grayImgB.height());
         int concatWidth = grayImgA.width() + grayImgB.width();
-        Size warpedSize = new Size(concatWidth,biggestHeight);
+        Size warpedSize = new Size(concatWidth, biggestHeight);
 
         epipoleAB = new Mat(warpedSize, imgA.type());
-        Mat epipoleHalfA = new Mat(epipoleAB, new Rect(0,0, imgA.width(), imgA.height()));
-        Mat epipoleHalfB = new Mat(epipoleAB, new Rect(imgA.width(),0, imgB.width(), imgB.height()));
+        Mat epipoleHalfA = new Mat(epipoleAB, new Rect(0, 0, imgA.width(), imgA.height()));
+        Mat epipoleHalfB = new Mat(epipoleAB, new Rect(imgA.width(), 0, imgB.width(), imgB.height()));
         linesImgA.copyTo(epipoleHalfA);
         linesImgB.copyTo(epipoleHalfB);
 
@@ -134,8 +134,8 @@ public class ImagePair3DProcess {
         Imgproc.warpPerspective(imgB, warpedB, getHomographyAB(), warpedSize);
 
         stitchedAB = new Mat(warpedSize, imgA.type());
-        Mat stitchedHalfA = new Mat(stitchedAB, new Rect(0,0, imgA.width(), imgA.height()));
-        Mat stitchedHalfB = new Mat(stitchedAB, new Rect(0,0, warpedB.width(), warpedB.height()));
+        Mat stitchedHalfA = new Mat(stitchedAB, new Rect(0, 0, imgA.width(), imgA.height()));
+        Mat stitchedHalfB = new Mat(stitchedAB, new Rect(0, 0, warpedB.width(), warpedB.height()));
         warpedB.copyTo(stitchedHalfB);
         imgA.copyTo(stitchedHalfA);
 
